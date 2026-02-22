@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [vue()],
   base: './',
   build: {
-    outDir: 'dist/vue',
+    outDir: 'dist',
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html')
@@ -15,6 +15,10 @@ export default defineConfig({
   },
   server: {
     port: 5173
+  },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0'
   },
   resolve: {
     alias: {

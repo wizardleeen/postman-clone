@@ -2,11 +2,14 @@
   <div id="app" class="app">
     <div class="app-header">
       <div class="logo">
-        <h1>HTTP Client</h1>
+        <h1>HTTP Client (Web Demo)</h1>
       </div>
       <div class="header-actions">
         <button @click="newRequest" class="btn btn-primary">New Request</button>
         <button @click="saveRequest" class="btn btn-secondary">Save</button>
+        <div class="web-notice">
+          💻 This is a web demo. Download the desktop app for full functionality.
+        </div>
       </div>
     </div>
     <div class="app-body">
@@ -56,6 +59,7 @@ let removeNewRequestListener: (() => void) | null = null
 let removeSaveRequestListener: (() => void) | null = null
 
 onMounted(() => {
+  // Only setup Electron listeners if running in Electron
   if (window.electronAPI) {
     removeNewRequestListener = window.electronAPI.onNewRequest(newRequest)
     removeSaveRequestListener = window.electronAPI.onSaveRequest(saveRequest)
@@ -83,6 +87,15 @@ const saveRequest = async () => {
     } else {
       console.error('Save failed:', result.error)
     }
+  } else {
+    // Web version - use localStorage
+    const data = {
+      request: requestStore.currentRequest,
+      collections: requestStore.collections,
+      history: requestStore.history
+    }
+    localStorage.setItem('http-client-data', JSON.stringify(data))
+    alert('Data saved to browser local storage!')
   }
 }
 
@@ -90,3 +103,15 @@ const loadRequest = (request: HttpRequest) => {
   requestStore.setCurrentRequest(request)
 }
 </script>
+
+<style>
+.web-notice {
+  font-size: 12px;
+  color: #666;
+  background: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 3px;
+  max-width: 250px;
+  text-align: center;
+}
+</style>
